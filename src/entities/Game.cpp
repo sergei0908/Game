@@ -1,23 +1,15 @@
 #include "Game.h"
-
 #include <cmath>
 #include <iostream>
+
 
 // Конструктор
 Game::Game() : window(sf::VideoMode(800, 600), "SFML Shooter")
 {
-    if (!texture_enemy.loadFromFile("C:/Users/lebed/work/cpp/MyGame/assets/texture_enemy.png"))
+    if (!texture_enemy.loadFromFile("texture_enemy.png"))
         std::cerr << "Error loading enemy texture\n";
     if (!texture_bullet.loadFromFile("C:/Users/lebed/work/cpp/MyGame/assets/bullet.png")) {
         std:: cerr <<  "Error loading texture bullet" << std::endl;
-    }
-    for (int i = 0; i < 15; i++) {
-        enemies.push_back(std::make_unique<Enemy>(texture_enemy, &player));
-
-        enemies.back()->setPosition(
-            rand() % 700 + 50,
-            rand() % 500 + 50
-        );
     }
     window.setFramerateLimit(60);
 }
@@ -48,9 +40,9 @@ void Game::processEvents()
 // Обновление логики
 void Game::Update()
 {
+    // стрельба
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
     {
-        // for (auto& enemy : enemies) {
             sf::Vector2f playerPos = player.getPosition();
             sf::Vector2f enemyPos = enemies.back()->getPosition();
             sf::Vector2f dir = enemyPos - playerPos;
@@ -60,12 +52,11 @@ void Game::Update()
                 dir /= length;
 
             bullets.push_back(Bullet(playerPos, dir, texture_bullet));
-        // }
     }
 
+    // проверка поподания в моба
     for (auto enemy = enemies.begin(); enemy != enemies.end();)
     {
-        // (*enemy)->Update();
         for (auto iter = bullets.begin(); iter != bullets.end();)
         {
             if ((*enemy)->getBounds().intersects(iter->getBounds()))
@@ -83,11 +74,14 @@ void Game::Update()
             ++enemy;
     }
 
+    // обновление всех событий  пуль
     for (auto& bullet : bullets)
         bullet.Update();
 
+    // обновление событий игрока
     player.Update();
 
+    // обновление всех событий мобов
     for (auto& enemy : enemies)
         enemy->Update();
 }

@@ -4,6 +4,7 @@ project(MyGame)
 set(CMAKE_CXX_STANDARD 17)
 
 set(SFML_DIR "C:/Users/lebed/work/cpp/MyGame/SFML-2.6.1/lib/cmake/SFML")
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/assets)
 
 find_package(SFML 2.6 COMPONENTS graphics window system REQUIRED)
 
